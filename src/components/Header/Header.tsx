@@ -1,19 +1,14 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  IconButton,
-  Menu,
-  TextField,
-  Toolbar,
-} from '@mui/material';
+import { AppBar, Box, Button, TextField, Toolbar } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Image from 'next/image';
 
 import Logo from '../../../public/naturaco.svg';
 import { Person } from '@mui/icons-material';
+import { useAuth } from '@/context/AuthContext';
+import { userAgent } from 'next/server';
 
 export const Header = () => {
+  const { isLogged, user } = useAuth();
   return (
     <AppBar
       position="static"
@@ -47,7 +42,7 @@ export const Header = () => {
           startIcon={<Person />}
           variant="outlined"
         >
-          Entrar
+          {isLogged ? user?.name : 'Entrar'}
         </Button>
       </Toolbar>
     </AppBar>

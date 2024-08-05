@@ -1,5 +1,6 @@
 import Loader from '@/components/Loader/Loader';
 import { NumberInput } from '@/components/NumberInput/NumberInput';
+import { useAuth } from '@/context/AuthContext';
 import { ProductApi } from '@/services/product.service';
 import { numberFormat } from '@/utils/numberFormat';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -33,6 +34,7 @@ export const DetailsProduct = ({ id }: Props) => {
     queryKey: ['getProductById'],
     queryFn: () => ProductApi.getProductById(id),
   });
+  const { isLogged, showAuthModal } = useAuth();
 
   const form = useForm({
     mode: 'all',
@@ -59,6 +61,11 @@ export const DetailsProduct = ({ id }: Props) => {
       await trigger(undefined, { shouldFocus: true });
 
       if (!isValid) {
+        return;
+      }
+
+      if (!isLogged) {
+        showAuthModal();
         return;
       }
     } catch (error) {

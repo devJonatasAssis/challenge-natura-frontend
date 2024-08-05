@@ -1,6 +1,7 @@
+import { ModalAuth } from '@/components/ModalAuth/ModalAuth';
 import { User } from '@/model/User';
 import { api } from '@/services/api.service';
-import {
+import React, {
   createContext,
   ReactNode,
   useContext,
@@ -10,9 +11,15 @@ import {
 
 interface AuthContextProps {
   user: User | null;
-  login: (user: User) => void;
+  login: (data: { email: string; password: string }) => Promise<void>;
   logout: () => void;
   isLogged: boolean;
+  showAuthModal: () => void;
+  hideAuthModal: () => void;
+}
+
+interface AuthProviderProps {
+  children: ReactNode;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -27,20 +34,21 @@ export const useAuth = (): AuthContextProps => {
   return context;
 };
 
-export const AuthProvider = (children: ReactNode) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
   useEffect(() => {
-    const user = localStorage.getItem('@natura:user');
-    const token = localStorage.getItem('@natura:token');
-    if (user && token) {
-      setUser(JSON.parse(user));
-      setToken(token);
+    const storedUser = localStorage.getItem('@natura:user');
+    const storedToken = localStorage.getItem('@natura:token');
+    if (storedUser && storedToken) {
+      setUser(JSON.parse(storedUser));
+      setToken(storedToken);
     }
   }, []);
 
-  const login = async (data: User) => {
+  const login = async (data: { email: string; password: string }) => {
     try {
       const response = await api.post('/session', {
         email: data.email,
@@ -66,13 +74,28 @@ export const AuthProvider = (children: ReactNode) => {
     localStorage.removeItem('@natura:token');
   };
 
+  const showAuthModal = () => {
+    setIsLoginModalVisible(true);
+  };
+
+  const hideAuthModal = () => {
+    setIsLoginModalVisible(false);
+  };
+
   const value = {
     user,
     token,
     login,
     logout,
     isLogged: !!user,
+    showAuthModal,
+    hideAuthModal,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+      {isLoginModalVisible && <ModalAuth onCloseModal={hideAuthModal} />}
+    </AuthContext.Provider>
+  );
 };

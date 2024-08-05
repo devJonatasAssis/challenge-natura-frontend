@@ -3,12 +3,12 @@
 import { Inter } from 'next/font/google';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Header } from '@/components';
+import { AuthProvider } from '@/context/AuthContext';
+import './global.css';
 
 const queryClient = new QueryClient();
 
 const inter = Inter({ subsets: ['latin'] });
-
-import './global.css';
 
 export default function RootLayout({
   children,
@@ -23,8 +23,10 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <QueryClientProvider client={queryClient}>
-          <Header />
-          {children}
+          <AuthProvider>
+            <Header />
+            {children}
+          </AuthProvider>
         </QueryClientProvider>
       </body>
     </html>
