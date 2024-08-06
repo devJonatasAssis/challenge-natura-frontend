@@ -1,9 +1,17 @@
 import { api } from './api.service';
 
-const listProducts = async (category?: string) => {
+interface FilterListProps {
+  name?: string;
+  take?: number;
+  page?: number;
+}
+
+const listProducts = async ({ name, page, take }: FilterListProps) => {
   const response = await api.get('products', {
     params: {
-      category,
+      name,
+      page,
+      take,
     },
   });
 

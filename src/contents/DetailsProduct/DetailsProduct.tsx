@@ -1,18 +1,17 @@
 import Loader from '@/components/Loader/Loader';
 import { QuantityInput } from '@/components/QuantityInput/QuantityInput';
 import { useAuth } from '@/context/AuthContext';
-import { useDrawerCart } from '@/context/CartDrawerContext';
-import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/useToast';
 import { CartApi } from '@/services/cart.service';
 import { ProductApi } from '@/services/product.service';
 import { numberFormat } from '@/utils/numberFormat';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ShoppingBag } from '@mui/icons-material';
+import { KeyboardBackspace, ShoppingBag } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Box, Chip, Grid, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -29,13 +28,14 @@ interface Props {
 }
 
 export const DetailsProduct = ({ id }: Props) => {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const {
     data: product,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ['getProductById'],
+    queryKey: ['getProductById', id],
     queryFn: () => ProductApi.getProductById(id),
   });
   const { isLogged, showAuthModal, user } = useAuth();
@@ -74,6 +74,8 @@ export const DetailsProduct = ({ id }: Props) => {
           type: 'error',
           title: errors.quantity?.message,
         });
+        setLoading(false);
+        return;
       }
 
       if (!isLogged) {
@@ -103,20 +105,41 @@ export const DetailsProduct = ({ id }: Props) => {
     }
   };
 
+  const onBack = () => {
+    router.replace('/');
+  };
+
   return (
     <Grid container spacing={4}>
-      <Grid item xs={6}>
+      <Grid item xs={12}>
+        <Button
+          startIcon={<KeyboardBackspace />}
+          variant="text"
+          sx={{ textTransform: 'capitalize' }}
+          color="warning"
+          size="large"
+          onClick={onBack}
+        >
+          Voltar
+        </Button>
+      </Grid>
+      <Grid item xs={12} md={6}>
         <Image
           alt="Imagem produto"
           src={product.image}
           width={500}
           height={500}
+          style={{ width: '100%', height: 'auto' }} // Garantir responsividade da imagem
         />
       </Grid>
 
-      <Grid item xs={6}>
-        <Typography fontSize={45}>{product.name}</Typography>
-        <Typography fontSize={20} fontWeight={300} color="#ACACAC">
+      <Grid item xs={12} md={6}>
+        <Typography fontSize={{ xs: 30, md: 45 }}>{product.name}</Typography>
+        <Typography
+          fontSize={{ xs: 16, md: 20 }}
+          fontWeight={300}
+          color="#ACACAC"
+        >
           {product.brand}
         </Typography>
 
@@ -124,18 +147,24 @@ export const DetailsProduct = ({ id }: Props) => {
           <Chip label="Lançamento" color="success" sx={{ mt: 1 }} />
         )}
 
-        <Typography mt={5} mb={3} fontSize={35} fontWeight={700} color="orange">
+        <Typography
+          mt={5}
+          mb={3}
+          fontSize={{ xs: 25, md: 35 }}
+          fontWeight={700}
+          color="orange"
+        >
           R$ {numberFormat(product.price)}
         </Typography>
 
-        <Box display="flex">
+        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }}>
           <QuantityInput form={form} name="quantity" />
           <LoadingButton
             loading={loading}
             startIcon={<ShoppingBag />}
             variant="contained"
             color="warning"
-            sx={{ height: 55, ml: 3 }}
+            sx={{ height: 55, mt: { xs: 2, md: 0 }, ml: { xs: 0, md: 3 } }}
             onClick={addProductCart}
           >
             Adicionar

@@ -7,6 +7,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import './global.css';
 import { SnackbarProvider } from 'notistack';
 import { CartDrawerProvider } from '@/context/CartDrawerContext';
+import { Footer } from '@/components/Footer/Footer';
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ export default function RootLayout({
               <CartDrawerProvider>
                 <Header />
                 {children}
+                <Footer />
               </CartDrawerProvider>
             </SnackbarProvider>
           </AuthProvider>

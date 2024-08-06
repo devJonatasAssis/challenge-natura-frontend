@@ -7,10 +7,12 @@ import {
   Drawer,
   IconButton,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import Loader from '../Loader/Loader';
 import { numberFormat } from '@/utils/numberFormat';
-import { DeleteTwoTone } from '@mui/icons-material';
+import { Close, DeleteTwoTone } from '@mui/icons-material';
 import { useState } from 'react';
 import { CartApi } from '@/services/cart.service';
 import { useToast } from '@/hooks/useToast';
@@ -25,6 +27,8 @@ export const Cart = ({ isCartOpen, closeCart }: Props) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { data, isLoading, refetch } = useCart(user?.id);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   if (isLoading) return <Loader />;
 
@@ -53,11 +57,21 @@ export const Cart = ({ isCartOpen, closeCart }: Props) => {
       anchor="right"
       open={isCartOpen}
       onClose={closeCart}
-      PaperProps={{ sx: { minWidth: 500 } }}
+      PaperProps={{ sx: { minWidth: isMobile ? '100%' : 500 } }}
     >
       <Box>
-        <Box sx={{ padding: 2 }}>
+        <Box
+          sx={{
+            padding: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <Typography>Minha sacola</Typography>
+          <IconButton onClick={closeCart}>
+            <Close />
+          </IconButton>
         </Box>
         <Divider />
 
