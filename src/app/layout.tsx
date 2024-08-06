@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Header } from '@/components';
 import { AuthProvider } from '@/context/AuthContext';
 import './global.css';
+import { SnackbarProvider } from 'notistack';
+import { CartProvider } from '@/context/CartContext';
 
 const queryClient = new QueryClient();
 
@@ -24,8 +26,18 @@ export default function RootLayout({
       <body className={inter.className}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <Header />
-            {children}
+            <SnackbarProvider
+              maxSnack={6}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+            >
+              <CartProvider>
+                <Header />
+                {children}
+              </CartProvider>
+            </SnackbarProvider>
           </AuthProvider>
         </QueryClientProvider>
       </body>

@@ -1,6 +1,8 @@
 import Loader from '@/components/Loader/Loader';
-import { NumberInput } from '@/components/NumberInput/NumberInput';
+import { QuantityInput } from '@/components/QuantityInput/QuantityInput';
 import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/hooks/useToast';
+import { CartApi } from '@/services/cart.service';
 import { ProductApi } from '@/services/product.service';
 import { numberFormat } from '@/utils/numberFormat';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -16,7 +18,7 @@ import * as yup from 'yup';
 const validationSchema = yup.object({
   quantity: yup
     .number()
-    .min(1, 'A quantidade tem que ser no mínimo 1')
+    .min(1, 'A quantidade tem que ser no mínimo 1 item')
     .typeError('A quantidade deve ser um número'),
 });
 
@@ -34,11 +36,15 @@ export const DetailsProduct = ({ id }: Props) => {
     queryKey: ['getProductById'],
     queryFn: () => ProductApi.getProductById(id),
   });
-  const { isLogged, showAuthModal } = useAuth();
+  const { isLogged, showAuthModal, user } = useAuth();
+  const { toast } = useToast();
 
   const form = useForm({
     mode: 'all',
     resolver: yupResolver(validationSchema),
+    defaultValues: {
+      quantity: 0,
+    },
   });
 
   const {
@@ -56,19 +62,42 @@ export const DetailsProduct = ({ id }: Props) => {
   }
 
   const addProductCart = async () => {
+    const data = form.getValues();
     try {
       setLoading(true);
       await trigger(undefined, { shouldFocus: true });
 
       if (!isValid) {
-        return;
+        toast({
+          type: 'error',
+          title: errors.quantity?.message,
+        });
       }
 
       if (!isLogged) {
         showAuthModal();
         return;
       }
-    } catch (error) {
+
+      const createPayload = {
+        userId: user?.id,
+        productId: id,
+        quantity: Number(data.quantity),
+      };
+
+      console.log(createPayload);
+
+      await CartApi.save(createPayload);
+
+      toast({
+        type: 'success',
+        title: 'Produto adicionado com sucesso.',
+      });
+    } catch (error: any) {
+      toast({
+        type: 'error',
+        title: error.response.data.message,
+      });
     } finally {
       setLoading(false);
     }
@@ -100,14 +129,7 @@ export const DetailsProduct = ({ id }: Props) => {
         </Typography>
 
         <Box display="flex">
-          <NumberInput
-            label="Quantidade"
-            name="quantity"
-            maxLength={10}
-            register={register}
-            variant="outlined"
-            error={errors.quantity}
-          />
+          <QuantityInput form={form} name="quantity" />
           <LoadingButton
             loading={loading}
             startIcon={<ShoppingBag />}

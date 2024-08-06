@@ -1,14 +1,28 @@
-import { AppBar, Box, Button, TextField, Toolbar } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import {
+  AppBar,
+  Badge,
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  Toolbar,
+} from '@mui/material';
 import Image from 'next/image';
 
 import Logo from '../../../public/naturaco.svg';
-import { Person } from '@mui/icons-material';
+import { Person, ShoppingBagOutlined } from '@mui/icons-material';
 import { useAuth } from '@/context/AuthContext';
-import { userAgent } from 'next/server';
+import { useCart } from '@/hooks/useCart';
+import Loader from '../Loader/Loader';
+import { useDrawerCart } from '@/context/CartContext';
 
 export const Header = () => {
   const { isLogged, user } = useAuth();
+  const { data: cart, isLoading } = useCart(user?.id);
+  const { openCart } = useDrawerCart();
+
+  if (isLoading) return <Loader />;
+
   return (
     <AppBar
       position="static"
@@ -44,8 +58,21 @@ export const Header = () => {
         >
           {isLogged ? user?.name : 'Entrar'}
         </Button>
+
+        <IconButton
+          sx={{
+            color: '#464646',
+            borderColor: '#464646',
+            textTransform: 'capitalize',
+            ml: 1,
+          }}
+          onClick={openCart}
+        >
+          <Badge badgeContent={cart.total | 0} color="warning">
+            <ShoppingBagOutlined fontSize="large" />
+          </Badge>
+        </IconButton>
       </Toolbar>
     </AppBar>
-    // <h1>Oi</h1>
   );
 };
