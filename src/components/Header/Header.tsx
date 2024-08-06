@@ -14,7 +14,7 @@ import { Person, ShoppingBagOutlined } from '@mui/icons-material';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/hooks/useCart';
 import Loader from '../Loader/Loader';
-import { useDrawerCart } from '@/context/CartContext';
+import { useDrawerCart } from '@/context/CartDrawerContext';
 
 export const Header = () => {
   const { isLogged, user } = useAuth();

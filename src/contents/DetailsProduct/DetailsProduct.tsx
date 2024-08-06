@@ -1,6 +1,8 @@
 import Loader from '@/components/Loader/Loader';
 import { QuantityInput } from '@/components/QuantityInput/QuantityInput';
 import { useAuth } from '@/context/AuthContext';
+import { useDrawerCart } from '@/context/CartDrawerContext';
+import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/useToast';
 import { CartApi } from '@/services/cart.service';
 import { ProductApi } from '@/services/product.service';
@@ -84,8 +86,6 @@ export const DetailsProduct = ({ id }: Props) => {
         productId: id,
         quantity: Number(data.quantity),
       };
-
-      console.log(createPayload);
 
       await CartApi.save(createPayload);
 
