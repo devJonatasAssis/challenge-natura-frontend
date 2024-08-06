@@ -1,7 +1,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogTitle,
   Divider,
   Grid,
   TextField,
@@ -9,7 +8,6 @@ import {
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { PasswordInput } from '../PasswordInput';
-import { error } from 'console';
 import { LoadingButton } from '@mui/lab';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -80,7 +78,7 @@ export const ModalAuth = ({ onCloseModal }: Props) => {
   };
 
   const handleRegister = async () => {
-    const data = formLogin.getValues();
+    const data = formRegister.getValues();
     try {
       setLoadingLogin(true);
 
@@ -176,6 +174,7 @@ export const ModalAuth = ({ onCloseModal }: Props) => {
               variant="contained"
               color="primary"
               fullWidth
+              onClick={handleRegister}
             >
               Cadastrar e entrar
             </LoadingButton>

@@ -28,13 +28,22 @@ export const QuantityInput = ({ form, name }: Props) => {
       justifyContent="center"
     >
       <Box display="flex" justifyContent="center" gap={2} alignItems="center">
-        <Button variant="contained" color="primary" onClick={onIncrement}>
+        <Button
+          data-testid="add"
+          variant="contained"
+          color="primary"
+          onClick={onIncrement}
+        >
           <Add />
         </Button>
         <Typography variant="h6" gutterBottom>
           {watch(name)}
         </Typography>
-        <Button variant="contained" onClick={onDecrement}>
+        <Button
+          data-testid="decrement"
+          variant="contained"
+          onClick={onDecrement}
+        >
           <Remove />
         </Button>
       </Box>

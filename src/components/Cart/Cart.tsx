@@ -63,9 +63,8 @@ export const Cart = ({ isCartOpen, closeCart }: Props) => {
 
         <Box>
           {data.carts.map((item: any, index: number) => (
-            <>
+            <Box key={index}>
               <Box
-                key={item}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -89,7 +88,11 @@ export const Cart = ({ isCartOpen, closeCart }: Props) => {
                   {loading === index ? (
                     'Removendo...'
                   ) : (
-                    <IconButton onClick={() => onRemove(item.id, index)}>
+                    <IconButton
+                      id="delete"
+                      name="delete"
+                      onClick={() => onRemove(item.id, index)}
+                    >
                       <DeleteTwoTone color="error" />
                     </IconButton>
                   )}
@@ -101,7 +104,7 @@ export const Cart = ({ isCartOpen, closeCart }: Props) => {
               </Box>
 
               <Divider sx={{ mb: 2 }} />
-            </>
+            </Box>
           ))}
 
           <Box display="flex" justifyContent="end" px={2}>

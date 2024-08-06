@@ -60,6 +60,7 @@ export const Header = () => {
         </Button>
 
         <IconButton
+          data-testid="cart-icon-button"
           sx={{
             color: '#464646',
             borderColor: '#464646',
