@@ -80,23 +80,29 @@ export const Cart = () => {
           Voltar aos produtos
         </Button>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12} md={6}>
         {data?.carts?.map((item: GetCart, index: number) => (
-          <Card key={item.id}>
+          <Card key={item.id} sx={{ mb: 2 }}>
             <CardContent>
               <Box
                 display="flex"
+                flexDirection={{ xs: 'column', sm: 'row' }}
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <Box display="flex" alignItems="center">
+                <Box
+                  display="flex"
+                  flexDirection={{ xs: 'column', sm: 'row' }}
+                  alignItems="center"
+                  mb={{ xs: 2, sm: 0 }}
+                >
                   <Avatar
                     variant="rounded"
-                    sx={{ width: 150, height: 150 }}
+                    sx={{ width: 150, height: 150, mb: { xs: 2, sm: 0 } }}
                     src={`https://bucket-natura-s3.s3.amazonaws.com/${item.product.image}`}
                   />
 
-                  <Box>
+                  <Box ml={{ sm: 2 }}>
                     <Typography variant="h6">{item.product.name}</Typography>
                     <Typography variant="subtitle1">
                       {item.product.brand}
@@ -131,7 +137,7 @@ export const Cart = () => {
         ))}
       </Grid>
 
-      <Grid item xs={6}>
+      <Grid item xs={12} md={6}>
         <Card>
           <CardHeader title="Resumo do carrinho" />
           <Divider />

@@ -86,7 +86,13 @@ export const Header = () => {
             my={1}
           >
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Image src={Logo} alt="Natura Logo" width={100} height={20} />
+              <Image
+                src={Logo}
+                alt="Natura Logo"
+                width={100}
+                height={20}
+                onClick={() => router.push('/')}
+              />
             </Box>
             <IconButton
               data-testid="cart-icon-button"

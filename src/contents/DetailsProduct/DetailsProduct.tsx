@@ -1,6 +1,6 @@
 import Loader from '@/components/Loader/Loader';
 import { QuantityInput } from '@/components/QuantityInput/QuantityInput';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { CartApi } from '@/services/cart.service';
 import { ProductApi } from '@/services/product.service';
