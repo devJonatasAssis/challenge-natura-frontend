@@ -1,5 +1,6 @@
 import { Cart } from '@/components/Cart/Cart';
 import { createContext, ReactNode, useContext, useState } from 'react';
+import { useAuth } from './AuthContext';
 
 interface CardDrawerContextProps {
   toggleCart: () => void;
@@ -18,9 +19,14 @@ interface CardDrawerProviderProps {
 
 export const CartDrawerProvider = ({ children }: CardDrawerProviderProps) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const { isLogged, showAuthModal } = useAuth();
 
   const openCart = () => {
-    setIsCartOpen(true);
+    if (isLogged) {
+      setIsCartOpen(true);
+    } else {
+      showAuthModal();
+    }
   };
 
   const toggleCart = () => {

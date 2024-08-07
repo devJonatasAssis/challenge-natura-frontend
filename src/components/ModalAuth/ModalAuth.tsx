@@ -13,6 +13,8 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { UserApi } from '@/services/user.service';
+import { useToast } from '@/hooks/useToast';
 
 interface LoginProps {
   email: string;
@@ -51,6 +53,7 @@ export const ModalAuth = ({ onCloseModal }: Props) => {
   const [loadingRegister, setLoadingRegister] = useState(false);
 
   const { login } = useAuth();
+  const { toast } = useToast();
 
   const formLogin = useForm<LoginProps>({
     mode: 'all',
@@ -65,21 +68,6 @@ export const ModalAuth = ({ onCloseModal }: Props) => {
   const handleLogin = async () => {
     const data = formLogin.getValues();
     try {
-      setLoadingRegister(true);
-
-      await login({ email: data.email, password: data.password });
-
-      onCloseModal();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingRegister(false);
-    }
-  };
-
-  const handleRegister = async () => {
-    const data = formRegister.getValues();
-    try {
       setLoadingLogin(true);
 
       await login({ email: data.email, password: data.password });
@@ -89,6 +77,28 @@ export const ModalAuth = ({ onCloseModal }: Props) => {
       console.error(error);
     } finally {
       setLoadingLogin(false);
+    }
+  };
+
+  const handleRegister = async () => {
+    const data = formRegister.getValues();
+    try {
+      setLoadingRegister(true);
+
+      await UserApi.save({
+        email: data.email,
+        name: data.name,
+        password: data.password,
+      });
+
+      await login({ email: data.email, password: data.password });
+
+      onCloseModal();
+      toast;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingRegister(false);
     }
   };
 
@@ -170,6 +180,7 @@ export const ModalAuth = ({ onCloseModal }: Props) => {
 
           <Grid item xs={12}>
             <LoadingButton
+              loading={loadingRegister}
               sx={{ height: 50 }}
               variant="contained"
               color="primary"

@@ -26,6 +26,7 @@ export const Cart = ({ isCartOpen, closeCart }: Props) => {
   const [loading, setLoading] = useState<number | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
+  console.log('USER', user?.id);
   const { data, isLoading, refetch } = useCart(user?.id);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
