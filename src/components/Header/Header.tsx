@@ -1,10 +1,8 @@
 import {
   AppBar,
-  Badge,
   Box,
   Button,
   IconButton,
-  TextField,
   Toolbar,
   Drawer,
   List,
@@ -15,26 +13,29 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import { Person, ShoppingBagOutlined } from '@mui/icons-material';
-import { useAuth } from '@/context/AuthContext';
-import { useCart } from '@/hooks/useCart';
-import Loader from '../Loader/Loader';
-import { useDrawerCart } from '@/context/CartDrawerContext';
 import { useState } from 'react';
 import Logo from '../../../public/naturaco.svg';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Header = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const { isLogged, user } = useAuth();
-  const { data: cart, isLoading } = useCart(user?.id);
-  const { openCart } = useDrawerCart();
-
-  if (isLoading) return <Loader />;
+  const { isLogged, user, showAuthModal } = useAuth();
+  const router = useRouter();
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
+  };
+
+  const goToCart = () => {
+    if (isLogged) {
+      router.push('/carrinho');
+    } else {
+      showAuthModal();
+    }
   };
 
   const menuList = (
@@ -94,11 +95,9 @@ export const Header = () => {
                 borderColor: '#464646',
                 textTransform: 'capitalize',
               }}
-              onClick={openCart}
+              onClick={goToCart}
             >
-              <Badge badgeContent={cart.total || 0} color="warning">
-                <ShoppingBagOutlined fontSize="large" />
-              </Badge>
+              <ShoppingBagOutlined fontSize="large" />
             </IconButton>
           </Box>
         ) : (
@@ -129,11 +128,9 @@ export const Header = () => {
                   borderColor: '#464646',
                   textTransform: 'capitalize',
                 }}
-                onClick={openCart}
+                onClick={goToCart}
               >
-                <Badge badgeContent={cart.total || 0} color="warning">
-                  <ShoppingBagOutlined fontSize="large" />
-                </Badge>
+                <ShoppingBagOutlined fontSize="large" />
               </IconButton>
             </Box>
           </>

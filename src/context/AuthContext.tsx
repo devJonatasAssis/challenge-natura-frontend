@@ -1,19 +1,33 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ModalAuth } from '@/components/ModalAuth/ModalAuth';
 import { User } from '@/model/User';
 import { api } from '@/services/api.service';
-import React, {
+import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import {
   createContext,
+  FC,
   ReactNode,
-  useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
+import PropTypes from 'prop-types';
 
-interface AuthContextProps {
+interface LoginProps {
+  email: string;
+  password: string;
+}
+
+interface AuthState {
   user: User | null;
+  isLogged: boolean;
+  isLoading: boolean;
+}
+
+interface AuthContextValue extends AuthState {
   login: (data: { email: string; password: string }) => Promise<void>;
   logout: () => void;
-  isLogged: boolean;
   showAuthModal: () => void;
   hideAuthModal: () => void;
 }
@@ -22,56 +36,72 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
-
-export const useAuth = (): AuthContextProps => {
-  const context = useContext(AuthContext);
-
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-
-  return context;
+const initialAuthState: AuthState = {
+  user: null,
+  isLogged: false,
+  isLoading: false,
 };
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+export const AuthContext = createContext<AuthContextValue>({
+  ...initialAuthState,
+  login: () => Promise.resolve(),
+  logout: () => Promise.resolve(),
+  showAuthModal: () => Promise.resolve(),
+  hideAuthModal: () => Promise.resolve(),
+});
+
+export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLogged, setIsLogged] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { children } = props;
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('@natura:user');
-    const storedToken = localStorage.getItem('@natura:token');
-    if (storedUser && storedToken) {
+    const token = localStorage.getItem('@natura:token');
+
+    if (storedUser && token) {
       setUser(JSON.parse(storedUser));
-      setToken(storedToken);
+      api.defaults.headers.authorization = `Bearer ${token}`;
+      setIsLogged(true);
     }
+
+    setIsLoading(false);
   }, []);
 
-  const login = async (data: { email: string; password: string }) => {
+  const login = async ({ email, password }: LoginProps) => {
     try {
-      const response = await api.post('/session', {
-        email: data.email,
-        password: data.password,
-      });
+      const response = await api.post('session', { email, password });
 
-      const { user, token } = response.data;
+      const { token, user } = response.data;
+
+      localStorage.setItem('@natura:token', token);
+      localStorage.setItem('@natura:user', JSON.stringify(user));
+
+      api.defaults.headers.authorization = `Bearer ${token}`;
 
       setUser(user);
-      setToken(token);
+      setIsLogged(true);
+      queryClient.removeQueries();
 
-      localStorage.setItem('@natura:user', JSON.stringify(user));
-      localStorage.setItem('@natura:token', token);
+      router.push('/');
     } catch (error) {
+      console.error('Login failed:', error);
       throw new Error('Falha ao se autenticar');
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem('@natura:user');
+  const logout = async (): Promise<void> => {
     localStorage.removeItem('@natura:token');
+    localStorage.removeItem('@natura:user');
+    setUser(null);
+    setIsLogged(false);
+    api.defaults.headers.authorization = '';
+    router.replace('/login');
   };
 
   const showAuthModal = () => {
@@ -82,15 +112,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsLoginModalVisible(false);
   };
 
-  const value = {
-    user,
-    token,
-    login,
-    logout,
-    isLogged: !!user,
-    showAuthModal,
-    hideAuthModal,
-  };
+  const value = useMemo(
+    () => ({
+      user,
+      isLogged,
+      login,
+      logout,
+      showAuthModal,
+      hideAuthModal,
+      isLoading,
+    }),
+    [login, logout, showAuthModal, hideAuthModal, isLoading, isLogged, user],
+  );
 
   return (
     <AuthContext.Provider value={value}>
@@ -99,3 +132,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     </AuthContext.Provider>
   );
 };
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+export const AuthConsumer = AuthContext.Consumer;

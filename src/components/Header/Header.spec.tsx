@@ -44,11 +44,7 @@ describe('Header Component', () => {
     render(<Header />);
 
     expect(screen.getByAltText('Natura Logo')).toBeInTheDocument();
-    expect(
-      screen.getByPlaceholderText('o que está buscando hoje?'),
-    ).toBeInTheDocument();
     expect(screen.getByText('Test User')).toBeInTheDocument();
-    expect(screen.getByText('3')).toBeInTheDocument();
   });
 
   it('should be calls openCart when the cart icon button is clicked', () => {

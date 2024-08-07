@@ -1,6 +1,6 @@
 import { numberFormat } from '@/utils/numberFormat';
-import { FavoriteBorder, HeartBroken, Star } from '@mui/icons-material';
-import { Alert, Box, Card, Chip, IconButton, Typography } from '@mui/material';
+import { FavoriteBorder, Star } from '@mui/icons-material';
+import { Box, Card, Chip, IconButton, Typography } from '@mui/material';
 import Image from 'next/image';
 
 interface Props {

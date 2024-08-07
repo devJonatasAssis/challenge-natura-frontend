@@ -2,7 +2,6 @@
 
 import { DetailsProduct } from '@/contents/DetailsProduct/DetailsProduct';
 import { Box } from '@mui/material';
-import { useRouter } from 'next/router';
 
 function DetailsProductScreen({ params }: { params: { id: string } }) {
   return (

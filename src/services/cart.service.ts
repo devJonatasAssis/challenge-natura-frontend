@@ -6,17 +6,17 @@ interface Cart {
   quantity: number;
 }
 
+interface GetCartProps {
+  userId: string | undefined;
+}
+
 const save = async (payload: Cart) => {
   const response = await api.post('cart', payload);
   return response.data;
 };
 
-const findCartByUserId = async (userId: string | undefined) => {
-  const response = await api.get('cart', {
-    params: {
-      userId,
-    },
-  });
+const findCartByUserId = async ({ userId }: GetCartProps) => {
+  const response = await api.get(`cart/${userId}`);
 
   return response.data;
 };

@@ -12,9 +12,9 @@ import { LoadingButton } from '@mui/lab';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
 import { UserApi } from '@/services/user.service';
-import { useToast } from '@/hooks/useToast';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 
 interface LoginProps {
   email: string;
@@ -53,7 +53,7 @@ export const ModalAuth = ({ onCloseModal }: Props) => {
   const [loadingRegister, setLoadingRegister] = useState(false);
 
   const { login } = useAuth();
-  const { toast } = useToast();
+  const router = useRouter();
 
   const formLogin = useForm<LoginProps>({
     mode: 'all',
@@ -72,6 +72,7 @@ export const ModalAuth = ({ onCloseModal }: Props) => {
 
       await login({ email: data.email, password: data.password });
 
+      router.refresh();
       onCloseModal();
     } catch (error) {
       console.error(error);
@@ -93,8 +94,8 @@ export const ModalAuth = ({ onCloseModal }: Props) => {
 
       await login({ email: data.email, password: data.password });
 
+      router.refresh();
       onCloseModal();
-      toast;
     } catch (error) {
       console.error(error);
     } finally {
