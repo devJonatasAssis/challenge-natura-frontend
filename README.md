@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Natura Challenge
 
-## Getting Started
+Este projeto é um desafio desenvolvido para a Natura, utilizando as mais modernas tecnologias web para criar uma aplicação robusta e escalável. A aplicação foi construída utilizando TypeScript, React, Next.js, Material UI, React Hook Form, React Query, Axios, e ContextAPI. O projeto está hospedado na Vercel e pode ser acessado [aqui](https://challenge-natura-frontend.vercel.app/).
 
-First, run the development server:
+## Tecnologias Utilizadas
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **TypeScript**: Superset do JavaScript que adiciona tipagem estática opcional ao JavaScript.
+- **React**: Biblioteca JavaScript para construção de interfaces de usuário.
+- **Next.js**: Framework React que possibilita a renderização do lado do servidor (SSR) e a geração de sites estáticos (SSG).
+- **Material UI**: Biblioteca de componentes React que implementa o Material Design do Google.
+- **React Hook Form**: Biblioteca para gerenciar formulários em React.
+- **React Query**: Biblioteca para buscar, armazenar em cache e sincronizar dados do servidor em aplicativos React.
+- **Axios**: Biblioteca para fazer requisições HTTP.
+- **ContextAPI**: Método para passar dados através da árvore de componentes sem precisar passar props manualmente em cada nível.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Funcionalidades
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Autenticação de Usuário**: Login e registro de usuários com validação de formulários utilizando React Hook Form.
+- **Gerenciamento de Estado**: Utilização do ContextAPI para gerenciar o estado global da aplicação.
+- **Consumo de API**: Integração com uma API RESTful utilizando Axios para buscar e enviar dados.
+- **Carrinho de Compras**: Funcionalidade de adicionar, remover e listar produtos no carrinho de compras.
+- **Interface Responsiva**: Design responsivo utilizando Material UI para garantir uma boa experiência em dispositivos móveis e desktops.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Instalação e Execução
 
-## Learn More
+Siga os passos abaixo para configurar e executar o projeto localmente:
 
-To learn more about Next.js, take a look at the following resources:
+### Pré-requisitos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Node.js instalado
+- Gerenciador de pacotes Yarn ou NPM
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Passo a Passo
 
-## Deploy on Vercel
+1. Clone o repositório:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    ```bash
+    git clone https://github.com/devJonatasAssis/challenge-natura-frontend.git
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+2. Navegue até o diretório do projeto:
+
+    ```bash
+    cd challenge-natura-frontend
+    ```
+
+3. Instale as dependências:
+
+    ```bash
+    yarn install
+    ```
+
+    ou
+
+    ```bash
+    npm install
+    ```
+
+4. Execute o projeto:
+
+    ```bash
+    yarn dev
+    ```
+
+    ou
+
+    ```bash
+    npm run dev
+    ```
+
+5. Abra seu navegador e acesse:
+
+    ```bash
+    http://localhost:3000
+    ```
+
+### Funcionalidade implementadas
+
+## Autenticação 
+
+- Tela de Login
+- Tela de Registro
+- Validação de Formulários com React Hook Form
+- Gerenciamento de Sessão com ContextAPI
+- 
+## Produtos 
+
+- Listagem de Produtos
+- Detalhes do Produto
+- Adicionar Produto ao Carrinho
+
+## Carrinho de Compras 
+
+- Visualização do Carrinho
+- Remoção de Produtos
+- Cálculo de Subtotal
+  
+## Hospedagem 
+
+O projeto está hospedado na Vercel e pode ser acessado através do link: https://challenge-natura-frontend.vercel.app/
+
+## Contato 
+
+Se você tiver alguma dúvida ou sugestão, entre em contato:
+
+- Email: devjonatasassis@gmail.com
+- Whatsapp: (44)998330366
+- LinkedIn: https://www.linkedin.com/in/jonatasassis/
+
+
