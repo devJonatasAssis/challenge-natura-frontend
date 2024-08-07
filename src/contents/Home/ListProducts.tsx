@@ -10,8 +10,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -20,21 +21,32 @@ export const ListProducts = () => {
   const router = useRouter();
 
   const formFilter = useForm();
-
   const { register, handleSubmit, watch } = formFilter;
-
   const name = watch('name');
 
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['getProducts'],
-    queryFn: () => ProductApi.listProducts({ name }),
+  const {
+    data,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery({
+    queryKey: ['getProducts', name],
+    queryFn: ({ pageParam = 0 }) =>
+      ProductApi.listProducts({ name, skip: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextCursor;
+    },
   });
 
-  if (isLoading) {
+  if (status === 'pending') {
     return <Loader />;
   }
 
-  if (error) {
+  if (status === 'error') {
     return <Typography>Error loading products</Typography>;
   }
 
@@ -49,6 +61,8 @@ export const ListProducts = () => {
   const onFilter = () => {
     refetch();
   };
+
+  const totalResults = data?.pages[0]?.total || 0;
 
   return (
     <Grid container spacing={2}>
@@ -77,9 +91,9 @@ export const ListProducts = () => {
 
       <Grid item xs={12} sm={6}>
         <Typography fontWeight={800} fontSize={{ xs: 24, md: 30 }}>
-          {data.total === 1
-            ? `${data.total} resultado encontrado`
-            : `${data.total} resultados encontrados`}
+          {totalResults === 1
+            ? `${totalResults} resultado encontrado`
+            : `${totalResults} resultados encontrados`}
         </Typography>
       </Grid>
 
@@ -134,26 +148,31 @@ export const ListProducts = () => {
 
       <Grid item xs={12}>
         <Grid container spacing={2}>
-          {data.products?.map((item: any) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
-              <CardProducts props={item} onClick={() => goToDetails(item.id)} />
-            </Grid>
+          {data?.pages.map((page, i) => (
+            <React.Fragment key={i}>
+              {page.products.map((p: any) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={p.id}>
+                  <CardProducts props={p} onClick={() => goToDetails(p.id)} />
+                </Grid>
+              ))}
+            </React.Fragment>
           ))}
         </Grid>
       </Grid>
 
-      {/* <Grid item xs={12} display="flex" justifyContent="center" mt={4}>
+      <Grid item xs={12} display="flex" justifyContent="center" mt={4}>
         {hasNextPage && (
           <Button
+            variant="outlined"
+            sx={{ textTransform: 'capitalize' }}
+            color="warning"
             onClick={() => fetchNextPage()}
             disabled={isFetchingNextPage}
-            variant="contained"
-            color="warning"
           >
-            {isFetchingNextPage ? 'Carregando mais...' : 'Ver mais'}
+            {isFetchingNextPage ? 'Carregando mais...' : 'Carregar mais'}
           </Button>
         )}
-      </Grid> */}
+      </Grid>
     </Grid>
   );
 };

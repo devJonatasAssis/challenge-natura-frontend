@@ -3,19 +3,23 @@ import { api } from './api.service';
 interface FilterListProps {
   name?: string;
   take?: number;
-  page?: number;
+  skip?: number;
 }
 
-const listProducts = async ({ name, page, take }: FilterListProps) => {
+const listProducts = async ({ name, skip = 0, take = 10 }: FilterListProps) => {
   const response = await api.get('products', {
     params: {
       name,
-      page,
+      skip,
       take,
     },
   });
 
-  return response.data;
+  return {
+    products: response.data.products,
+    nextCursor: response.data.nextCursor,
+    total: response.data.total,
+  };
 };
 
 const getProductById = async (id: string) => {

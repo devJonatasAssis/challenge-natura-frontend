@@ -107,17 +107,6 @@ export const Header = () => {
               <Image src={Logo} alt="Natura Logo" width={100} height={20} />
             </Box>
 
-            <Box
-              sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}
-            >
-              <TextField
-                placeholder="O que está buscando hoje?"
-                size="small"
-                sx={{ width: { xs: '100%', md: 500 } }}
-                variant="standard"
-              />
-            </Box>
-
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Button
                 sx={{
